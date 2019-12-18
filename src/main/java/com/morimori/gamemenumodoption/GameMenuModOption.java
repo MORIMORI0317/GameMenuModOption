@@ -1,8 +1,8 @@
 package com.morimori.gamemenumodoption;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.IngameMenuScreen;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,23 +19,20 @@ public class GameMenuModOption {
 	@SubscribeEvent
 	public void onGUI(GuiScreenEvent.InitGuiEvent.Post e) {
 
-		if (e.getGui() instanceof IngameMenuScreen) {
+		if (e.getGui() instanceof GuiIngameMenu) {
 
-			e.addWidget(new Button(e.getWidgetList().get(6).x, e.getWidgetList().get(6).y + 24,
-					e.getWidgetList().get(6).getWidth(), e.getWidgetList().get(6).getHeight(),
-					I18n.format("menu.modoption"),
-					(p_213055_1_) -> {
-						Minecraft.getInstance()
-								.displayGuiScreen(new net.minecraftforge.fml.client.gui.GuiModList(e.getGui()));
+			e.addButton(new GuiButton(7, e.getGui().width / 2 + 2, e.getGui().height / 4 + 96 + -16, 98, 20,
+					I18n.format("menu.modoption")) {
 
-					}));
+				public void onClick(double mouseX, double mouseY) {
+					Minecraft.getInstance()
+							.displayGuiScreen(new net.minecraftforge.fml.client.gui.GuiModList(e.getGui()));
+				}
+			});
 
-			e.getWidgetList().get(6).x = e.getGui().width / 2 - 102;
-			e.getWidgetList().get(6).setWidth(204);
-
-			e.getWidgetList().get(7).y += 24;
-
-			e.getWidgetList().get(5).y += 24;
+			e.getButtonList().get(3).x = e.getGui().width / 2 - 100;
+			e.getButtonList().get(3).setWidth(200);
+			e.getButtonList().get(3).y -= 24;
 
 		}
 
