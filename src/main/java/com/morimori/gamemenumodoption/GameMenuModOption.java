@@ -7,6 +7,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.gui.ModListScreen;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod("gamemenumodoption")
@@ -26,7 +27,7 @@ public class GameMenuModOption {
 					I18n.format("menu.modoption"),
 					(p_213055_1_) -> {
 						Minecraft.getInstance()
-								.displayGuiScreen(new net.minecraftforge.fml.client.gui.GuiModList(e.getGui()));
+								.displayGuiScreen(new ModListScreen(e.getGui()));
 
 					}));
 
