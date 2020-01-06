@@ -2,6 +2,7 @@ package com.morimori.gamemenumodoption;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.IngameMenuScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -37,6 +38,10 @@ public class GameMenuModOption {
 			e.getWidgetList().get(7).y += 24;
 
 			e.getWidgetList().get(5).y += 24;
+
+			for (Widget in : e.getWidgetList()) {
+				in.y -= 16;
+			}
 
 		}
 
