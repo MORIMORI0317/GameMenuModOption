@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)" 
+loaderVersion="[32,)"
 logoFile="logo.png" 
 [[mods]]
 modId="gamemenumodoption"
