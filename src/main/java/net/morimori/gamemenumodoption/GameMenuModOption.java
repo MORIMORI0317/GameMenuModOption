@@ -1,4 +1,4 @@
-package com.morimori.gamemenumodoption;
+package net.morimori.gamemenumodoption;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.IngameMenuScreen;
@@ -8,7 +8,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.gui.ModListScreen;
+import net.minecraftforge.fml.client.gui.screen.ModListScreen;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod("gamemenumodoption")

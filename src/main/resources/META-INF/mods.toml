@@ -1,28 +1,10 @@
-modLoader="javafml" 
-
-loaderVersion="[25,)" 
-
-issueTrackerURL="http://my.issue.tracker/"
-
-[[mods]] 
-
-modId="gamemenumodoption" 
-
-version="1.1" 
-
-displayName="GameMenuModOption" 
-
-updateJSONURL="http://myurl.me/" 
-
-displayURL="" 
-
-logoFile="gamemenumodoption.png" 
-
-credits=""
-
+modLoader="javafml"
+loaderVersion="[31,)" 
+logoFile="logo.png" 
+[[mods]]
+modId="gamemenumodoption"
+version="${file.jarVersion}" 
+displayName="Game Menu Mod Option"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/gamemenumodoption" 
 authors="MORIMORI0317" 
-
-description='''
-Thank you for downloading!
-
-'''
+description="Thank you for downloading!"
