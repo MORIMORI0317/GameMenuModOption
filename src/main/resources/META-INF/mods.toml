@@ -1,6 +1,6 @@
 modLoader="javafml"
-loaderVersion="[32,)"
-logoFile="logo.png" 
+loaderVersion="[33,)"
+license="LGPL v3"
 [[mods]]
 modId="gamemenumodoption"
 version="${file.jarVersion}" 

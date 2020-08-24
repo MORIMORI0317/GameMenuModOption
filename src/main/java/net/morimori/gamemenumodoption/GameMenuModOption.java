@@ -25,12 +25,10 @@ public class GameMenuModOption {
         if (e.getGui() instanceof IngameMenuScreen) {
 
             e.addWidget(new Button(e.getWidgetList().get(6).field_230690_l_, e.getWidgetList().get(6).field_230691_m_ + 24,
-                    e.getWidgetList().get(6).func_230998_h_(), e.getWidgetList().get(6).getHeight(),
+                    e.getWidgetList().get(6).func_230998_h_(), e.getWidgetList().get(6).func_238483_d_(),
                     new StringTextComponent(I18n.format("menu.modoption")),
-                    (p_213055_1_) -> {
-                        Minecraft.getInstance()
-                                .displayGuiScreen(new ModListScreen(e.getGui()));
-
+                    (n) -> {
+                        Minecraft.getInstance().displayGuiScreen(new ModListScreen(e.getGui()));
                     }));
 
             e.getWidgetList().get(6).field_230690_l_ = e.getGui().field_230708_k_ / 2 - 102;
