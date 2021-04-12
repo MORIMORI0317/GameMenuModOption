@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.morimori.gamemenumodoption.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "gamemenumodoption.refmap.json",
+  "client": [
+    "IngameMenuScreenMixin",
+    "ScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

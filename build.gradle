@@ -3,9 +3,12 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
+        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
+
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 plugins {
@@ -14,6 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
 version = "${mod_version}"
 group = "${mod_group}"
@@ -28,6 +32,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run\\client')
+            arg "-mixin.config=gamemenumodoption.mixins.json"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -39,6 +44,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run\\server')
+            arg "-mixin.config=gamemenumodoption.mixins.json"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -64,6 +70,12 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    compile 'org.spongepowered:mixin:0.8-SNAPSHOT'
+}
+repositories {
+    maven {
+        url = 'https://dist.creeper.host/Sponge/maven'
+    }
 }
 ext.themanifest = {
     attributes([
@@ -73,7 +85,8 @@ ext.themanifest = {
             "Implementation-Title"    : project.name,
             "Implementation-Version"  : "${version}",
             "Implementation-Vendor"   : "${mod_vendor}",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs"            : "gamemenumodoption.mixins.json"
     ])
 }
 jar {
@@ -128,4 +141,7 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
             }
         }
     }
+}
+mixin {
+    add sourceSets.main, "gamemenumodoption.refmap.json"
 }
