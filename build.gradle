@@ -1,147 +1,16 @@
+apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/1.17.1/forge.gradle"
+apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/upload.gradle"
+
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
-        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
-
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
-plugins {
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
 
-version = "${mod_version}"
-group = "${mod_group}"
-archivesBaseName = "${mod_name}-${mc_version}"
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'snapshot', version: "${forge_mapping}"
-//accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    runs {
-        client {
-            workingDirectory project.file('run\\client')
-            arg "-mixin.config=gamemenumodoption.mixins.json"
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                gamemenumodoption {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run\\server')
-            arg "-mixin.config=gamemenumodoption.mixins.json"
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                gamemenumodoption {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run\\data')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'gamemenumodoption', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            mods {
-                gamemenumodoption {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    compile 'org.spongepowered:mixin:0.8-SNAPSHOT'
-}
-repositories {
-    maven {
-        url = 'https://dist.creeper.host/Sponge/maven'
-    }
-}
-ext.themanifest = {
-    attributes([
-            "Specification-Title"     : "${mod_name}",
-            "Specification-Vendor"    : "${mod_vendor}",
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : "${version}",
-            "Implementation-Vendor"   : "${mod_vendor}",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs"            : "gamemenumodoption.mixins.json"
-    ])
-}
-jar {
-    manifest themanifest
-}
-jar.finalizedBy('reobfJar')
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-    manifest themanifest
-}
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'source'
-    manifest themanifest
-}
-artifacts {
-    archives devJar
-    archives sourceJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact devJar
-            artifact sourceJar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
-if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
-    curseforge {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${curesfg_id}"
-            changelog = ""
-            releaseType = "${releasetype}"
-            addGameVersion "${mc_version}"
-            mainArtifact(jar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}"
-            }
-            addArtifact(devJar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-dev"
-            }
-            addArtifact(sourceJar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-source"
-            }
-        }
-    }
-}
-mixin {
-    add sourceSets.main, "gamemenumodoption.refmap.json"
+    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
