@@ -15,6 +15,3 @@ buildscript {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
-mixin {
-    add sourceSets.main, "gamemenumodoption.refmap.json"
-}
