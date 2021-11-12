@@ -1,4 +1,4 @@
-package net.morimori.gamemenumodoption.mixin;
+package net.morimori0317.gamemenumodoption.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -11,8 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.gui.NotificationModUpdateScreen;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fmlclient.gui.screen.ModListScreen;
-import net.morimori.gamemenumodoption.ClientConfig;
+import net.morimori0317.gamemenumodoption.ClientConfig;
+import net.morimori0317.gamemenumodoption.GameMenuModOptionAPI;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +34,7 @@ public class PauseScreenMixin extends Screen {
         super(p_96550_);
     }
 
-    @Inject(method = "init", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         if (ModList.get().isLoaded("bettergamemenu")) return;
 
@@ -50,7 +50,11 @@ public class PauseScreenMixin extends Screen {
                     shareToLan.y -= 24;
             }
 
-            Button button = new Button(this.width / 2 + 4, this.height / 4 + (gmrmflag ? 96 : 120) - 16, 98, 20, new TranslatableComponent("menu.modoption"), (n) -> Minecraft.getInstance().setScreen(new ModListScreen(this)));
+            Button button = new Button(this.width / 2 + 4, this.height / 4 + (gmrmflag ? 96 : 120) - 16, 98, 20, new TranslatableComponent("menu.modoption"), (n) -> {
+                var openGui = GameMenuModOptionAPI.getOpenModOptions(this);
+                if (openGui != null)
+                    Minecraft.getInstance().setScreen(openGui);
+            });
             addRenderableWidget(button);
             if (showUpdate)
                 modUpdateNotification = init((PauseScreen) (Object) this, button);
@@ -60,15 +64,17 @@ public class PauseScreenMixin extends Screen {
                     options.y += 24;
                 if (returnToMenu != null)
                     returnToMenu.y += 24;
-                for (Widget widget : renderables) {
-                    if (widget instanceof AbstractWidget abstractWidget)
-                        abstractWidget.y -= 16;
+                if (ClientConfig.SlideUpGameMenuButtons.get()) {
+                    for (Widget widget : renderables) {
+                        if (widget instanceof AbstractWidget abstractWidget)
+                            abstractWidget.y -= 16;
+                    }
                 }
             }
         }
     }
 
-    @Inject(method = "render", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "render", at = @At("TAIL"))
     private void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
         if (ModList.get().isLoaded("bettergamemenu")) return;
         if (this.showPauseMenu) {

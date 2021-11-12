@@ -1,10 +1,10 @@
-package net.morimori.gamemenumodoption.mixin;
+package net.morimori0317.gamemenumodoption.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fmlclient.gui.screen.ModListScreen;
-import net.morimori.gamemenumodoption.ClientConfig;
+import net.morimori0317.gamemenumodoption.ClientConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,4 +1,4 @@
-package net.morimori.gamemenumodoption;
+package net.morimori0317.gamemenumodoption;
 
 import net.minecraftforge.fml.common.Mod;
 
