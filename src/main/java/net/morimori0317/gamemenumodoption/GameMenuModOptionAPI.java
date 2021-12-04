@@ -1,7 +1,7 @@
 package net.morimori0317.gamemenumodoption;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.fmlclient.gui.screen.ModListScreen;
+import net.minecraftforge.client.gui.ModListScreen;
 
 import java.util.function.Function;
 
