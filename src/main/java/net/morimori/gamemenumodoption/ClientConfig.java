@@ -8,6 +8,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ClientConfig {
     public static ForgeConfigSpec.ConfigValue<Boolean> ShowNotificationModUpdate;
     public static ForgeConfigSpec.ConfigValue<Boolean> RenderModListBackground;
+    public static ForgeConfigSpec.ConfigValue<Boolean> MineTogetherCompatibility;
+    public static ForgeConfigSpec.ConfigValue<Boolean> GameMenuRemoveGFARBCompatibility;
 
     public static void init() {
         Pair<ConfigLoder, ForgeConfigSpec> client_config = new ForgeConfigSpec.Builder().configure(ConfigLoder::new);
@@ -19,6 +21,8 @@ public class ClientConfig {
             builder.push("General");
             ShowNotificationModUpdate = builder.define("Show Notification Mod Update", true);
             RenderModListBackground = builder.define("Render Mod List Background", true);
+            MineTogetherCompatibility = builder.define("MineTogether Compatibility", true);
+            GameMenuRemoveGFARBCompatibility = builder.define("GameMenuRemoveGFARB Compatibility", true);
             builder.pop();
         }
     }
