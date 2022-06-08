@@ -124,18 +124,6 @@ artifacts {
     archives devJar
     archives sourceJar
 }
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -143,11 +131,11 @@ tasks.withType(JavaCompile).configureEach {
 
 modrinth {
     token = System.getenv('modrinthapikey')
-    projectId = "${rootProject.modrinth_id}"
-    versionName = "${rootProject.mod_name}-${rootProject.mc_version}-${project.mod_version}"
-    versionNumber = "${rootProject.mc_version}-${project.mod_version}"
+    projectId = "${project.modrinth_id}"
+    versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
+    versionNumber = "${project.mc_version}-${project.mod_version}"
     versionType = "${project.release_type}"
-    uploadFile = file("${project.buildDir}/libs/${rootProject.mod_id}-${project.name}-${rootProject.mc_version}-${project.mod_version}.jar")
+    uploadFile = file("${project.buildDir}/libs/${project.mod_id}-${project.name}-${project.mc_version}-${project.mod_version}.jar")
     gameVersions = ["1.19"]
     loaders = ["forge"]
 }
@@ -155,18 +143,53 @@ curseforge {
     if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
         apiKey = System.getenv('curesforgeapikey')
         project {
-            id = "${rootProject.curesforge_id}"
+            id = "${project.curesforge_id}"
             changelog = ""
-            releaseType = "${rootProject.release_type}"
-            addGameVersion "${rootProject.mc_version}"
+            releaseType = "${project.release_type}"
+            addGameVersion "${project.mc_version}"
             addGameVersion 'Java 17'
 
-            mainArtifact(file("${project.buildDir}/libs/${rootProject.mod_id}-${project.name}-${rootProject.mc_version}-${project.mod_version}.jar")) {
-                displayName = "${rootProject.name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
+            mainArtifact(file("${project.buildDir}/libs/${project.mod_id}-${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-Forge"
             }
 
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-sources.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-sources"
+            addArtifact(file("${project.buildDir}/libs/${project.mod_id}-${project.mod_version}-sources.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-Forge-sources"
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifactId = project.mod_id + "-" + project.name
+            from components.java
+            pom {
+                name = project.name
+                description = project.maven_description
+                licenses {
+                    license {
+                        name = project.maven_license_name
+                        url = project.maven_license_url
+                    }
+                }
+                developers {
+                    developer {
+                        id = project.maven_developer_name
+                        name = project.maven_developer_id
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url "https://maven.felnull.dev/"
+            credentials {
+                username = "felnull"
+                password = "${project.maven_password}" != '' ? "${project.maven_password}" : System.getenv('mavenpassword')
             }
         }
     }
