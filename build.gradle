@@ -8,7 +8,7 @@ plugins {
 
 version = project.mod_version
 group = project.mod_group
-archivesBaseName = "${project.mod_name}-${project.mc_version}-Forge"
+archivesBaseName = "${project.mod_name}-${project.mc_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -135,7 +135,7 @@ modrinth {
     versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
     versionNumber = "${project.mc_version}-${project.mod_version}"
     versionType = "${project.release_type}"
-    uploadFile = file("${project.buildDir}/libs/${project.mod_id}-${project.name}-${project.mc_version}-${project.mod_version}.jar")
+    uploadFile = file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")
     gameVersions = ["1.19"]
     loaders = ["forge"]
 }
@@ -149,12 +149,12 @@ curseforge {
             addGameVersion "${project.mc_version}"
             addGameVersion 'Java 17'
 
-            mainArtifact(file("${project.buildDir}/libs/${project.mod_id}-${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-Forge"
+            mainArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
             }
 
-            addArtifact(file("${project.buildDir}/libs/${project.mod_id}-${project.mod_version}-sources.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-Forge-sources"
+            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mod_version}-sources.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
             }
         }
     }
@@ -163,7 +163,7 @@ curseforge {
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = project.mod_id + "-" + project.name
+            artifactId = project.mod_id
             from components.java
             pom {
                 name = project.name
