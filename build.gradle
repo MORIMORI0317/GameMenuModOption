@@ -1,18 +1,173 @@
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/1.18/forge_mixin.gradle"
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/upload.gradle"
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/publishing.gradle"
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.+'
+    id "com.modrinth.minotaur" version "2.2.0"
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-        maven {
-            url "https://repo.spongepowered.org/repository/maven-public/"
-            content { includeGroup "org.spongepowered" }
+version = project.mod_version
+group = project.mod_group
+archivesBaseName = "${project.mod_name}-${project.mc_version}-Forge"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+minecraft {
+    mappings channel: 'official', version: '1.19'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenumodoption {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenumodoption {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenumodoption {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                gamemenumodoption {
+                    source sourceSets.main
+                }
+            }
         }
     }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.19-41.0.1'
+}
+
+jar.finalizedBy('reobfJar')
+
+ext.themanifest = {
+    attributes([
+            "Specification-Title"     : project.mod_name,
+            "Specification-Vendor"    : project.mod_vendor,
+            "Specification-Version"   : "1",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : project.mod_implevendor,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+}
+
+jar {
+    manifest themanifest
+}
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    manifest themanifest
+}
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    manifest themanifest
+}
+artifacts {
+    archives devJar
+    archives sourceJar
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+modrinth {
+    token = System.getenv('modrinthapikey')
+    projectId = "${rootProject.modrinth_id}"
+    versionName = "${rootProject.mod_name}-${rootProject.mc_version}-${project.mod_version}"
+    versionNumber = "${rootProject.mc_version}-${project.mod_version}"
+    versionType = "${project.release_type}"
+    uploadFile = file("${project.buildDir}/libs/${rootProject.mod_id}-${project.name}-${rootProject.mc_version}-${project.mod_version}.jar")
+    gameVersions = ["1.19"]
+    loaders = ["forge"]
+}
+curseforge {
+    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
+        apiKey = System.getenv('curesforgeapikey')
+        project {
+            id = "${rootProject.curesforge_id}"
+            changelog = ""
+            releaseType = "${rootProject.release_type}"
+            addGameVersion "${rootProject.mc_version}"
+            addGameVersion 'Java 17'
+
+            mainArtifact(file("${project.buildDir}/libs/${rootProject.mod_id}-${project.name}-${rootProject.mc_version}-${project.mod_version}.jar")) {
+                displayName = "${rootProject.name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
+            }
+
+            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-sources.jar")) {
+                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-sources"
+            }
+        }
     }
 }

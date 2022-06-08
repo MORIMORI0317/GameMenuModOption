@@ -1,4 +1,4 @@
-package net.morimori0317.gamemenumodoption;
+package net.morimori0317.gmmo;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.client.gui.ModListScreen;
