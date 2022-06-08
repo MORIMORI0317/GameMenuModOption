@@ -153,7 +153,7 @@ curseforge {
                 displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
             }
 
-            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mod_version}-sources.jar")) {
+            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}-sources.jar")) {
                 displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
             }
         }
