@@ -26,12 +26,15 @@ import net.morimori0317.gmmo.Integration.BetterGameMenuIntegration;
 import java.util.List;
 
 public class ScreenHandler {
+    private static final Minecraft mc = Minecraft.getInstance();
+
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.InitScreenEvent.Post e) {
-        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu|| BetterGameMenuIntegration.isModLoaded()) return;
+        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu || BetterGameMenuIntegration.isModLoaded())
+            return;
         var options = findButton(e.getListenersList(), "menu.options");
-        var returnToMenu= findButton(e.getListenersList(),"menu.returnToMenu");
-        var shareToLan= findButton(e.getListenersList(),"menu.shareToLan");
+        var returnToMenu = findButton(e.getListenersList(), mc.isLocalServer() ? "menu.returnToMenu" : "menu.disconnect");
+        var shareToLan = findButton(e.getListenersList(), "menu.shareToLan");
 
         boolean gmrmflag = ModList.get().isLoaded("gamemenuremovegfarb");
 
@@ -63,24 +66,27 @@ public class ScreenHandler {
             }
         }
 
-        if(ClientConfig.ShowNotificationModUpdate.get())
-            e.addListener(new NotificationModUpdateListener(notificationInit(pauseScreen,button)));
+        if (ClientConfig.ShowNotificationModUpdate.get())
+            e.addListener(new NotificationModUpdateListener(notificationInit(pauseScreen, button)));
     }
 
     @SubscribeEvent
     public static void onScreenRender(ScreenEvent.DrawScreenEvent.Post e) {
-        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu|| BetterGameMenuIntegration.isModLoaded()) return;
+        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu || BetterGameMenuIntegration.isModLoaded())
+            return;
 
-        if(ClientConfig.ShowNotificationModUpdate.get()) {
+        if (ClientConfig.ShowNotificationModUpdate.get()) {
             for (GuiEventListener child : e.getScreen().children()) {
                 if (child instanceof NotificationModUpdateListener notificationModUpdateListener)
                     notificationModUpdateListener.notificationModUpdateScreen.render(e.getPoseStack(), e.getMouseX(), e.getMouseY(), e.getPartialTick());
             }
         }
     }
+
     @SubscribeEvent
     public static void onScreenBackgroundRender(ScreenEvent.BackgroundDrawnEvent e) {
-        if (!(e.getScreen() instanceof ModListScreen modListScreen)|| !ClientConfig.RenderModListBackground.get()||BetterGameMenuIntegration.isModLoaded()||Minecraft.getInstance().level==null) return;
+        if (!(e.getScreen() instanceof ModListScreen modListScreen) || !ClientConfig.RenderModListBackground.get() || BetterGameMenuIntegration.isModLoaded() || Minecraft.getInstance().level == null)
+            return;
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -88,12 +94,13 @@ public class ScreenHandler {
         RenderSystem.setShaderTexture(0, GuiComponent.BACKGROUND_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(0.0D, modListScreen.height, 0.0D).uv(0.0F, (float)modListScreen.height / 32.0F + (float)0).color(64, 64, 64, 255).endVertex();
-        bufferbuilder.vertex(modListScreen.width, modListScreen.height, 0.0D).uv((float)modListScreen.width / 32.0F, (float)modListScreen.height / 32.0F + (float)0).color(64, 64, 64, 255).endVertex();
-        bufferbuilder.vertex(modListScreen.width, 0.0D, 0.0D).uv((float)modListScreen.width / 32.0F, (float)0).color(64, 64, 64, 255).endVertex();
-        bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, (float)0).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(0.0D, modListScreen.height, 0.0D).uv(0.0F, (float) modListScreen.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(modListScreen.width, modListScreen.height, 0.0D).uv((float) modListScreen.width / 32.0F, (float) modListScreen.height / 32.0F + (float) 0).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(modListScreen.width, 0.0D, 0.0D).uv((float) modListScreen.width / 32.0F, (float) 0).color(64, 64, 64, 255).endVertex();
+        bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, (float) 0).color(64, 64, 64, 255).endVertex();
         tesselator.end();
     }
+
     private static Button findButton(List<GuiEventListener> listeners, String name) {
         for (GuiEventListener listener : listeners) {
             if (listener instanceof Button button && button.getMessage() instanceof MutableComponent mutableComponent && mutableComponent.getContents() instanceof TranslatableContents translatableContents) {
@@ -111,7 +118,7 @@ public class ScreenHandler {
         return notificationModUpdateScreen;
     }
 
-    private static class NotificationModUpdateListener implements GuiEventListener{
+    private static class NotificationModUpdateListener implements GuiEventListener {
         private final NotificationModUpdateScreen notificationModUpdateScreen;
 
         private NotificationModUpdateListener(NotificationModUpdateScreen notificationModUpdateScreen) {
