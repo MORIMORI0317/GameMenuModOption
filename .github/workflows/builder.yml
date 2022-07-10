@@ -31,7 +31,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
-          name: GMRG-Release
+          name: GameMenuModOption-Release
           path: build/libs
       - name: Create Release
         id: create_release

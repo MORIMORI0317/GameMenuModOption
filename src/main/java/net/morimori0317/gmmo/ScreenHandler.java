@@ -18,7 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.ModListScreen;
-import net.minecraftforge.client.gui.NotificationModUpdateScreen;
+import net.minecraftforge.client.gui.TitleScreenModUpdateIndicator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.morimori0317.gmmo.Integration.BetterGameMenuIntegration;
@@ -29,7 +29,7 @@ public class ScreenHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
     @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post e) {
+    public static void onScreenInit(ScreenEvent.Init.Post e) {
         if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu || BetterGameMenuIntegration.isModLoaded())
             return;
         var options = findButton(e.getListenersList(), "menu.options");
@@ -71,7 +71,7 @@ public class ScreenHandler {
     }
 
     @SubscribeEvent
-    public static void onScreenRender(ScreenEvent.DrawScreenEvent.Post e) {
+    public static void onScreenRender(ScreenEvent.Render.Post e) {
         if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu || BetterGameMenuIntegration.isModLoaded())
             return;
 
@@ -84,7 +84,7 @@ public class ScreenHandler {
     }
 
     @SubscribeEvent
-    public static void onScreenBackgroundRender(ScreenEvent.BackgroundDrawnEvent e) {
+    public static void onScreenBackgroundRender(ScreenEvent.BackgroundRendered e) {
         if (!(e.getScreen() instanceof ModListScreen modListScreen) || !ClientConfig.RenderModListBackground.get() || BetterGameMenuIntegration.isModLoaded() || Minecraft.getInstance().level == null)
             return;
 
@@ -111,17 +111,17 @@ public class ScreenHandler {
         return null;
     }
 
-    private static NotificationModUpdateScreen notificationInit(PauseScreen gui, Button modButton) {
-        NotificationModUpdateScreen notificationModUpdateScreen = new NotificationModUpdateScreen(modButton);
+    private static TitleScreenModUpdateIndicator notificationInit(PauseScreen gui, Button modButton) {
+        TitleScreenModUpdateIndicator notificationModUpdateScreen = new TitleScreenModUpdateIndicator(modButton);
         notificationModUpdateScreen.resize(gui.getMinecraft(), gui.width, gui.height);
         notificationModUpdateScreen.init();
         return notificationModUpdateScreen;
     }
 
     private static class NotificationModUpdateListener implements GuiEventListener {
-        private final NotificationModUpdateScreen notificationModUpdateScreen;
+        private final TitleScreenModUpdateIndicator notificationModUpdateScreen;
 
-        private NotificationModUpdateListener(NotificationModUpdateScreen notificationModUpdateScreen) {
+        private NotificationModUpdateListener(TitleScreenModUpdateIndicator notificationModUpdateScreen) {
             this.notificationModUpdateScreen = notificationModUpdateScreen;
         }
     }
