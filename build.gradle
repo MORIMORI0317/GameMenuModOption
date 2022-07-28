@@ -160,7 +160,7 @@ curseforge {
         }
     }
 }
-
+/*
 publishing {
     publications {
         mavenForge(MavenPublication) {
@@ -194,4 +194,4 @@ publishing {
             }
         }
     }
-}
+}*/
