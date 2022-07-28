@@ -34,7 +34,9 @@ public class ScreenHandler {
             return;
         var options = findButton(e.getListenersList(), "menu.options");
         var returnToMenu = findButton(e.getListenersList(), mc.isLocalServer() ? "menu.returnToMenu" : "menu.disconnect");
-        var shareToLan = findButton(e.getListenersList(), "menu.shareToLan");
+
+        boolean changeSTL = mc.hasSingleplayerServer() && !mc.getSingleplayerServer().isPublished();
+        var shareToLan = findButton(e.getListenersList(), changeSTL ? "menu.shareToLan" : "menu.playerReporting");
 
         boolean gmrmflag = ModList.get().isLoaded("gamemenuremovegfarb");
 
