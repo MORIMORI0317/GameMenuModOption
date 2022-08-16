@@ -13,6 +13,7 @@ import net.minecraftforge.client.gui.NotificationModUpdateScreen;
 import net.minecraftforge.fml.ModList;
 import net.morimori0317.gamemenumodoption.ClientConfig;
 import net.morimori0317.gamemenumodoption.GameMenuModOptionAPI;
+import net.morimori0317.gamemenumodoption.integration.MineTogetherIntegration;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,18 +40,22 @@ public class PauseScreenMixin extends Screen {
         if (ModList.get().isLoaded("bettergamemenu")) return;
 
         if (this.showPauseMenu) {
+            boolean minetFlg = MineTogetherIntegration.isFixButtons();
+
             boolean gmrmflag = ModList.get().isLoaded("gamemenuremovegfarb");
             Button options = (Button) this.renderables.get(gmrmflag ? 3 : 5);
             Button returnToMenu = (Button) this.renderables.get(gmrmflag ? 5 : 7);
             Button shareToLan = (Button) this.renderables.get(6);
             if (shareToLan != null) {
-                shareToLan.x = width / 2 - 102;
-                shareToLan.setWidth(204);
+                if (!minetFlg) {
+                    shareToLan.x = width / 2 - 102;
+                    shareToLan.setWidth(204);
+                }
                 if (gmrmflag)
                     shareToLan.y -= 24;
             }
 
-            Button button = new Button(this.width / 2 + 4, this.height / 4 + (gmrmflag ? 96 : 120) - 16, 98, 20, new TranslatableComponent("menu.modoption"), (n) -> {
+            Button button = new Button(minetFlg ? width / 2 - 102 : this.width / 2 + 4, this.height / 4 + ((gmrmflag || minetFlg) ? 96 : 120) - 16, minetFlg ? 204 : 98, 20, new TranslatableComponent("menu.modoption"), (n) -> {
                 var openGui = GameMenuModOptionAPI.getOpenModOptions(this);
                 if (openGui != null)
                     Minecraft.getInstance().setScreen(openGui);
@@ -59,7 +64,7 @@ public class PauseScreenMixin extends Screen {
             if (showUpdate)
                 modUpdateNotification = init((PauseScreen) (Object) this, button);
 
-            if (!gmrmflag) {
+            if (!gmrmflag || minetFlg) {
                 if (options != null)
                     options.y += 24;
                 if (returnToMenu != null)

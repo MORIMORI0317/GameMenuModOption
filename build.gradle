@@ -16,3 +16,15 @@ buildscript {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
+repositories {
+    maven {
+        url "https://cursemaven.com"
+    }
+    maven {
+        url "https://maven.architectury.dev/"
+    }
+}
+dependencies {
+    compileOnly fg.deobf("curse.maven:ctm-267172:3805535");//MineTogether
+    compileOnly fg.deobf("dev.architectury:architectury-forge:4.9.83")
+}

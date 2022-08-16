@@ -4,6 +4,7 @@
   "package": "net.morimori0317.gamemenumodoption.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ConnectModuleMixin",
     "PauseScreenMixin",
     "ScreenMixin"
   ],
