@@ -12,9 +12,9 @@ public class GameMenuModOptionAPI {
         OPEN_MOD_OPTIONS = modOptionsFactory;
     }
 
-    public static Screen getOpenModOptions(Screen screen) {
+    public static Screen getOpenModOptions(Screen parentScreen) {
         if (OPEN_MOD_OPTIONS == null)
             return null;
-        return OPEN_MOD_OPTIONS.apply(screen);
+        return OPEN_MOD_OPTIONS.apply(parentScreen);
     }
 }

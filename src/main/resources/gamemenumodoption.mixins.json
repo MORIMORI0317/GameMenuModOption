@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.morimori0317.gmmo.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "gamemenumodoption.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "PauseScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

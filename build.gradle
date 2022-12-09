@@ -1,35 +1,45 @@
+buildscript {
+    repositories {
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
 plugins {
     id 'eclipse'
-    id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id "com.modrinth.minotaur" version "2.2.0"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.4.4"
 }
+
+apply plugin: 'org.spongepowered.mixin'
 
 version = project.mod_version
 group = project.mod_group
-archivesBaseName = "${project.mod_name}-${project.mc_version}"
+archivesBaseName = "${project.mod_id}-mc${project.mc_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: "${project.mc_version}"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'gamemenumodoption'
+            property 'forge.enabledGameTestNamespaces', project.mod_id
 
             mods {
-                gamemenumodoption  {
+                gamemenumodoption {
                     source sourceSets.main
                 }
             }
@@ -42,7 +52,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'gamemenumodoption'
+            property 'forge.enabledGameTestNamespaces', project.mod_id
 
             mods {
                 gamemenumodoption {
@@ -58,7 +68,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'gamemenumodoption'
+            property 'forge.enabledGameTestNamespaces', project.mod_id
 
             mods {
                 gamemenumodoption {
@@ -74,7 +84,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'gamemenumodoption', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 gamemenumodoption {
@@ -85,6 +95,12 @@ minecraft {
     }
 }
 
+mixin {
+    add sourceSets.main, "${project.mod_id}.refmap.json"
+
+    config "${project.mod_id}.mixins.json"
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
@@ -92,54 +108,31 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.0'
-}
-jar.finalizedBy('reobfJar')
+    minecraft "net.minecraftforge:forge:${project.fg_version}"
 
-ext.themanifest = {
-    attributes([
-            "Specification-Title"     : project.mod_name,
-            "Specification-Vendor"    : project.mod_vendor,
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : project.jar.archiveVersion,
-            "Implementation-Vendor"   : project.mod_implevendor,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    ])
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {
-    manifest themanifest
+    manifest {
+        attributes([
+                "Specification-Title"     : project.mod_id,
+                "Specification-Vendor"    : project.mod_vendor,
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : project.mod_implevendor,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-    manifest themanifest
-}
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-    manifest themanifest
-}
-artifacts {
-    archives devJar
-    archives sourceJar
-}
+
+jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-modrinth {
-    token = System.getenv('modrinthapikey')
-    projectId = "${project.modrinth_id}"
-    versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
-    versionNumber = "${project.mc_version}-${project.mod_version}"
-    versionType = "${project.release_type}"
-    uploadFile = file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")
-    gameVersions = ["1.19"]
-    loaders = ["forge"]
-}
 curseforge {
     if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
         apiKey = System.getenv('curesforgeapikey')
@@ -150,48 +143,27 @@ curseforge {
             addGameVersion "${project.mc_version}"
             addGameVersion 'Java 17'
 
-            mainArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
+            mainArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}.jar")) {
                 displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
             }
 
-            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}-sources.jar")) {
+            addArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}-sources.jar")) {
                 displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
             }
         }
     }
 }
-/*
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = project.mod_id
-            from components.java
-            pom {
-                name = project.name
-                description = project.maven_description
-                licenses {
-                    license {
-                        name = project.maven_license_name
-                        url = project.maven_license_url
-                    }
-                }
-                developers {
-                    developer {
-                        id = project.maven_developer_name
-                        name = project.maven_developer_id
-                    }
-                }
-            }
-        }
-    }
 
-    repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_password}" != '' ? "${project.maven_password}" : System.getenv('mavenpassword')
-            }
-        }
+
+if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
+    modrinth {
+        token = System.getenv('modrinthapikey')
+        projectId = rootProject.modrinth_id
+        versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
+        versionNumber = "${project.mc_version}-${project.mod_version}"
+        versionType = project.release_type
+        uploadFile = file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}.jar")
+        gameVersions = List.of(project.support_versions.split(","))
+        loaders = ["forge"]
     }
-}*/
+}

@@ -1,5 +1,5 @@
-modLoader="javafml"
-loaderVersion="[42,)"
+modLoader = "javafml"
+loaderVersion = "[44,)"
 license = "GNU LGPLv3"
 issueTrackerURL = "https://github.com/MORIMORI0317/GameMenuModOption/issues"
 
@@ -9,10 +9,10 @@ version = "${file.jarVersion}"
 displayName = "Game Menu Mod Option"
 logoFile = "logo.png"
 authors = "MORIMORI0317"
+
 description = '''
 A mod that adds a mod option to the game menu
 The ikisugi game menu mod...
 '''
-
 [modproperties.gamemenumodoption]
 catalogueImageIcon = "logo.png"
