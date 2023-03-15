@@ -168,7 +168,10 @@ curseforge {
         apiKey = System.getenv('curesforgeapikey')
         project {
             id = "${project.curesforge_id}"
-            changelog = ""
+
+            changelogType = 'markdown'
+            changelog = file('./LATEST_CHANGELOG.md')
+
             releaseType = "${project.release_type}"
             addGameVersion "${project.mc_version}"
             addGameVersion 'Java 17'
@@ -195,5 +198,6 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
         uploadFile = file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}.jar")
         gameVersions = List.of(project.support_versions.split(","))
         loaders = ["forge"]
+        changelog = file('./LATEST_CHANGELOG.md').text
     }
 }
