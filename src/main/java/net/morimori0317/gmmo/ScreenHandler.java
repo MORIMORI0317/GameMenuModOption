@@ -19,7 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ScreenHandler {
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post e) {
-        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu)
+        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !((GMMOPauseScreen) pauseScreen).isShowPauseMenu())
             return;
 
         if (ClientConfig.SHOW_NOTIFICATION_MOD_UPDATE.get())
@@ -28,7 +28,7 @@ public class ScreenHandler {
 
     @SubscribeEvent
     public static void onScreenRender(ScreenEvent.Render.Post e) {
-        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu)
+        if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !((GMMOPauseScreen) pauseScreen).isShowPauseMenu())
             return;
 
         if (ClientConfig.SHOW_NOTIFICATION_MOD_UPDATE.get()) {
@@ -69,6 +69,15 @@ public class ScreenHandler {
 
         private NotificationModUpdateListener(TitleScreenModUpdateIndicator notificationModUpdateScreen) {
             this.notificationModUpdateScreen = notificationModUpdateScreen;
+        }
+
+        @Override
+        public void setFocused(boolean focused) {
+        }
+
+        @Override
+        public boolean isFocused() {
+            return false;
         }
     }
 }

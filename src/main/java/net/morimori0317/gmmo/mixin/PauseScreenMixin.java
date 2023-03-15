@@ -1,8 +1,9 @@
 package net.morimori0317.gmmo.mixin;
 
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.GridWidget;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.ShareToLanScreen;
@@ -32,13 +33,18 @@ public class PauseScreenMixin implements GMMOPauseScreen {
     @Shadow
     @Final
     private static Component PLAYER_REPORTING;
+
+    @Shadow
+    @Final
+    private boolean showPauseMenu;
     @Unique
     private static final Component MOD_OPTION = Component.translatable("menu.modoption");
     @Unique
     private Button modOptionButton;
 
-    @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/GridWidget$RowHelper;addChild(Lnet/minecraft/client/gui/components/AbstractWidget;)Lnet/minecraft/client/gui/components/AbstractWidget;", ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void createPauseMenuInject(CallbackInfo ci, GridWidget gridwidget, GridWidget.RowHelper rowHelper) {
+    @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void createPauseMenuInject(CallbackInfo ci, GridLayout gridlayout, GridLayout.RowHelper rowHelper) {
+        System.out.println("ｳｧｧ!!ｵﾚﾓｲｯﾁｬｳｩｩｩ!!!ｳｳｳｳｳｳｳｳｳｩｩｩｩｩｩｩｩｳｳｳｳｳｳｳｳ!ｲｨｨｲｨｨｨｲｲｲｨｲｲｲｲ");
         var mc = Minecraft.getInstance();
 
         if (!ClientConfig.MOD_MENU_STYLE.get()) {
@@ -71,5 +77,10 @@ public class PauseScreenMixin implements GMMOPauseScreen {
     @Override
     public Button getModOptionButton() {
         return modOptionButton;
+    }
+
+    @Override
+    public boolean isShowPauseMenu() {
+        return showPauseMenu;
     }
 }

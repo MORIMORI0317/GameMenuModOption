@@ -27,11 +27,11 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
 minecraft {
     mappings channel: 'official', version: "${project.mc_version}"
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     runs {
         client {
+
             workingDirectory project.file('run')
+
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -101,10 +101,10 @@ mixin {
     config "${project.mod_id}.mixins.json"
 }
 
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-
 }
 
 dependencies {
@@ -128,16 +128,19 @@ ext.themanifest = {
 jar {
     manifest themanifest
 }
+
 task devJar(type: Jar) {
     from sourceSets.main.output
-    classifier = 'dev'
+    setArchiveClassifier('dev')
     manifest themanifest
 }
+
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    setArchiveClassifier('sources')
     manifest themanifest
 }
+
 artifacts {
     archives devJar
     archives sourceJar

@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[44,)"
+loaderVersion = "[45,)"
 license = "GNU LGPLv3"
 issueTrackerURL = "https://github.com/MORIMORI0317/GameMenuModOption/issues"
 
@@ -14,5 +14,10 @@ description = '''
 A mod that adds a mod option to the game menu
 The ikisugi game menu mod...
 '''
-[modproperties.gamemenumodoption]
-catalogueImageIcon = "logo.png"
+
+[[dependencies.gamemenumodoption]]
+    modId="forge"
+    mandatory=true
+    versionRange="[45,)"
+    ordering="NONE"
+    side="BOTH"

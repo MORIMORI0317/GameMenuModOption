@@ -4,4 +4,6 @@ import net.minecraft.client.gui.components.Button;
 
 public interface GMMOPauseScreen {
     Button getModOptionButton();
+
+    boolean isShowPauseMenu();
 }
