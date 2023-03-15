@@ -1,7 +1,7 @@
 {
   "homepage": "https://github.com/MORIMORI0317/GameMenuModOption/releases",
   "1.19.4": {
-    "2.1.0": "Java: 17.0.6, JVM: 17.0.6+10-LTS (Amazon.com Inc.), Arch: amd64\nChanged\n- Port MC1.19.4\n"
+    "2.1.0": "Changed\n- Port MC1.19.4\n"
   },
   "promos": {
     "1.19.4-latest": "2.1.0",
