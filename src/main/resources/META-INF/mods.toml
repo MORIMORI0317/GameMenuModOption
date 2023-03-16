@@ -7,6 +7,7 @@ issueTrackerURL = "https://github.com/MORIMORI0317/GameMenuModOption/issues"
 modId = "gamemenumodoption"
 version = "${file.jarVersion}"
 displayName = "Game Menu Mod Option"
+updateJSONURL = "https://raw.githubusercontent.com/MORIMORI0317/GameMenuModOption/master/version_check.json"
 logoFile = "logo.png"
 authors = "MORIMORI0317"
 
@@ -16,8 +17,8 @@ The ikisugi game menu mod...
 '''
 
 [[dependencies.gamemenumodoption]]
-    modId="forge"
-    mandatory=true
-    versionRange="[45,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[45,)"
+ordering = "NONE"
+side = "BOTH"
