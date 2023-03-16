@@ -16,6 +16,9 @@ A mod that adds a mod option to the game menu
 The ikisugi game menu mod...
 '''
 
+[modproperties.gamemenumodoption]
+catalogueImageIcon = "icon.png"
+
 [[dependencies.gamemenumodoption]]
 modId = "forge"
 mandatory = true
