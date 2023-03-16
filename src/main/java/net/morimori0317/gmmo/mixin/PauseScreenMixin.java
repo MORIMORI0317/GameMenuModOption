@@ -44,7 +44,6 @@ public class PauseScreenMixin implements GMMOPauseScreen {
 
     @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
     private void createPauseMenuInject(CallbackInfo ci, GridLayout gridlayout, GridLayout.RowHelper rowHelper) {
-        System.out.println("ｳｧｧ!!ｵﾚﾓｲｯﾁｬｳｩｩｩ!!!ｳｳｳｳｳｳｳｳｳｩｩｩｩｩｩｩｩｳｳｳｳｳｳｳｳ!ｲｨｨｲｨｨｨｲｲｲｨｲｲｲｲ");
         var mc = Minecraft.getInstance();
 
         if (!ClientConfig.MOD_MENU_STYLE.get()) {
