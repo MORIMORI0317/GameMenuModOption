@@ -13,7 +13,7 @@ version = mod_version
 group = mod_group
 
 base {
-    archivesName = mod_id
+    archivesName = "${project.mod_id}-mc${project.minecraft_version}"
 }
 
 changelog {
@@ -140,19 +140,39 @@ processResources {
     }
 }
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : mod_id,
-                "Specification-Vendor"    : mod_vendor,
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : mod_implevendor,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+ext.themanifest = {
+    attributes([
+            "Specification-Title"     : mod_id,
+            "Specification-Vendor"    : mod_vendor,
+            "Specification-Version"   : "1",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : mod_implevendor,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
 }
+
+jar {
+    manifest themanifest
+}
+
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    setArchiveClassifier('dev')
+    manifest themanifest
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    setArchiveClassifier('sources')
+    manifest themanifest
+}
+
+artifacts {
+    archives devJar
+    archives sourceJar
+}
+
 
 jar.finalizedBy('reobfJar')
 
