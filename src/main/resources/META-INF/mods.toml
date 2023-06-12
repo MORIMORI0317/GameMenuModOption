@@ -1,13 +1,14 @@
 modLoader = "javafml"
-loaderVersion = "[45,)"
+loaderVersion = "${loader_version_range}"
 license = "GNU LGPLv3"
 issueTrackerURL = "https://github.com/MORIMORI0317/GameMenuModOption/issues"
 
 [[mods]]
 modId = "gamemenumodoption"
-version = "${file.jarVersion}"
+version = "${mod_version}"
 displayName = "Game Menu Mod Option"
 updateJSONURL = "https://raw.githubusercontent.com/MORIMORI0317/GameMenuModOption/master/version_check.json"
+displayURL = "https://modrinth.com/mod/gamemenumodoption"
 logoFile = "logo.png"
 authors = "MORIMORI0317"
 
@@ -22,6 +23,13 @@ catalogueImageIcon = "icon.png"
 [[dependencies.gamemenumodoption]]
 modId = "forge"
 mandatory = true
-versionRange = "[45,)"
+versionRange = "${forge_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.gamemenumodoption]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

@@ -6,10 +6,10 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.ModListScreen;
@@ -34,7 +34,7 @@ public class ScreenHandler {
         if (ClientConfig.SHOW_NOTIFICATION_MOD_UPDATE.get()) {
             for (GuiEventListener child : e.getScreen().children()) {
                 if (child instanceof NotificationModUpdateListener notificationModUpdateListener)
-                    notificationModUpdateListener.notificationModUpdateScreen.render(e.getPoseStack(), e.getMouseX(), e.getMouseY(), e.getPartialTick());
+                    notificationModUpdateListener.notificationModUpdateScreen.render(e.getGuiGraphics(), e.getMouseX(), e.getMouseY(), e.getPartialTick());
             }
         }
     }
@@ -47,7 +47,7 @@ public class ScreenHandler {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, GuiComponent.BACKGROUND_LOCATION);
+        RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.vertex(0.0D, modListScreen.height, 0.0D).uv(0.0F, (float) modListScreen.height / 32.0F).color(64, 64, 64, 255).endVertex();

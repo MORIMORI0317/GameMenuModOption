@@ -1,46 +1,49 @@
-buildscript {
-    repositories {
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id 'eclipse'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.4.4"
+    id "com.modrinth.minotaur" version "2.8.0"
     id 'org.jetbrains.changelog' version "2.0.0"
 }
 
-apply plugin: 'org.spongepowered.mixin'
+version = mod_version
+group = mod_group
 
-version = project.mod_version
-group = project.mod_group
-archivesBaseName = "${project.mod_id}-mc${project.mc_version}"
+base {
+    archivesName = mod_id
+}
+
+changelog {
+    repositoryUrl = rootProject.repository_url
+    introduction = """
+    Changelog to track updates for this mod.  
+    Add your changes to Unreleased if you want to commit.  
+    Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+    """
+    combinePreReleases = false
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: "${project.mc_version}"
-
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
     runs {
         client {
-
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                gamemenumodoption {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -53,10 +56,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                gamemenumodoption {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -69,10 +72,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                gamemenumodoption {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -85,10 +88,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                gamemenumodoption {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -103,65 +106,73 @@ mixin {
 }
 
 
-changelog {
-    repositoryUrl = rootProject.repository_url
-    introduction = """
-    Changelog to track updates for this mod.  
-    Add your changes to Unreleased if you want to commit.  
-    Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-    """
-    combinePreReleases = false
-}
-
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.fg_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-ext.themanifest = {
-    attributes([
-            "Specification-Title"     : project.mod_id,
-            "Specification-Vendor"    : project.mod_vendor,
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : project.jar.archiveVersion,
-            "Implementation-Vendor"   : project.mod_implevendor,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    ])
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+/*def replaceProperties = [
+        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version, forge_version_range: forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_id: mod_id, mod_name: mod_name, mod_version: mod_version
+]*/
+
+def replaceProperties = [
+        mod_id             : mod_id, mod_version: mod_version, loader_version_range: loader_version_range,
+        forge_version_range: forge_version_range, minecraft_version_range: minecraft_version_range
+]
+
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
 }
 
 jar {
-    manifest themanifest
-}
-
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    setArchiveClassifier('dev')
-    manifest themanifest
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    setArchiveClassifier('sources')
-    manifest themanifest
-}
-
-artifacts {
-    archives devJar
-    archives sourceJar
+    manifest {
+        attributes([
+                "Specification-Title"     : mod_id,
+                "Specification-Vendor"    : mod_vendor,
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : mod_implevendor,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
 jar.finalizedBy('reobfJar')
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
 
 curseforge {
     if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
@@ -173,15 +184,15 @@ curseforge {
             changelog = file('./LATEST_CHANGELOG.md')
 
             releaseType = "${project.release_type}"
-            addGameVersion "${project.mc_version}"
+            addGameVersion "${project.minecraft_version}"
             addGameVersion 'Java 17'
 
-            mainArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
+            mainArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.minecraft_version}-${project.mod_version}.jar")) {
+                displayName = "${project.name}-${project.minecraft_version}-${project.mod_version}"
             }
 
-            addArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}-sources.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
+            addArtifact(file("${project.buildDir}/libs/${project.mod_id}-mc${project.minecraft_version}-${project.mod_version}-sources.jar")) {
+                displayName = "${project.name}-${project.minecraft_version}-${project.mod_version}-sources"
             }
         }
     }
@@ -192,10 +203,10 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
     modrinth {
         token = System.getenv('modrinthapikey')
         projectId = rootProject.modrinth_id
-        versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
-        versionNumber = "${project.mc_version}-${project.mod_version}"
+        versionName = "${project.mod_name}-${project.minecraft_version}-${project.mod_version}"
+        versionNumber = "${project.minecraft_version}-${project.mod_version}"
         versionType = project.release_type
-        uploadFile = file("${project.buildDir}/libs/${project.mod_id}-mc${project.mc_version}-${project.mod_version}.jar")
+        uploadFile = file("${project.buildDir}/libs/${project.mod_id}-mc${project.minecraft_version}-${project.mod_version}.jar")
         gameVersions = List.of(project.support_versions.split(","))
         loaders = ["forge"]
         changelog = file('./LATEST_CHANGELOG.md').text
