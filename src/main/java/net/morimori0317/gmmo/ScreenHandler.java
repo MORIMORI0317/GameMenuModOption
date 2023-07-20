@@ -1,5 +1,6 @@
 package net.morimori0317.gmmo;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -21,12 +22,27 @@ import net.minecraftforge.client.gui.ModListScreen;
 import net.minecraftforge.client.gui.TitleScreenModUpdateIndicator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModFileInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.morimori0317.gmmo.Integration.BetterGameMenuIntegration;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.VersionRange;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ScreenHandler {
     private static final Minecraft mc = Minecraft.getInstance();
+    private static final DefaultArtifactVersion EXIST_MOD_BUTTON_FORGE_VERSION = new DefaultArtifactVersion("43.2.20");
+    private static final Supplier<DefaultArtifactVersion> CURRENT_FORGE_VERSION = Suppliers.memoize(() -> {
+        IModFileInfo forgeMod = ModList.get().getModFileById("forge");
+
+        if (forgeMod == null) {
+            return null;
+        }
+
+        return new DefaultArtifactVersion(forgeMod.versionString());
+    });
 
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post e) {
@@ -39,6 +55,19 @@ public class ScreenHandler {
         var shareToLan = findButton(e.getListenersList(), changeSTL ? "menu.shareToLan" : "menu.playerReporting");
 
         boolean gmrmflag = ModList.get().isLoaded("gamemenuremovegfarb");
+        boolean existModButton = existModButton();
+
+        if (existModButton) {
+            Button button = findButton(e.getListenersList(), "fml.menu.mods");
+            if (button != null) {
+                e.removeListener(button);
+            }
+
+            if (returnToMenu != null) {
+                returnToMenu.y -= 24;
+            }
+        }
+
 
         if (shareToLan != null) {
             shareToLan.x = e.getScreen().width / 2 - 102;
@@ -119,6 +148,17 @@ public class ScreenHandler {
         notificationModUpdateScreen.init();
         return notificationModUpdateScreen;
     }
+
+    private static boolean existModButton() {
+        DefaultArtifactVersion currentForgeVersion = CURRENT_FORGE_VERSION.get();
+
+        if (currentForgeVersion == null) {
+            return false;
+        }
+
+        return currentForgeVersion.compareTo(EXIST_MOD_BUTTON_FORGE_VERSION) >= 0;
+    }
+
 
     private static class NotificationModUpdateListener implements GuiEventListener {
         private final TitleScreenModUpdateIndicator notificationModUpdateScreen;
