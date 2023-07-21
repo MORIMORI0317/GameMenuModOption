@@ -57,15 +57,8 @@ public class ScreenHandler {
         boolean gmrmflag = ModList.get().isLoaded("gamemenuremovegfarb");
         boolean existModButton = existModButton();
 
-        if (existModButton) {
-            Button button = findButton(e.getListenersList(), "fml.menu.mods");
-            if (button != null) {
-                e.removeListener(button);
-            }
-
-            if (returnToMenu != null) {
-                returnToMenu.y -= 24;
-            }
+        if (existModButton && returnToMenu != null) {
+            returnToMenu.y -= 24;
         }
 
 
@@ -76,12 +69,33 @@ public class ScreenHandler {
                 shareToLan.y -= 24;
         }
 
-        Button button = new Button(e.getScreen().width / 2 + 4, e.getScreen().height / 4 + (gmrmflag ? 96 : 120) - 16, 98, 20, Component.translatable("menu.modoption"), (n) -> {
-            var openGui = GameMenuModOptionAPI.getOpenModOptions(e.getScreen());
-            if (openGui != null)
-                Minecraft.getInstance().setScreen(openGui);
-        });
-        e.addListener(button);
+        Button modButton;
+
+        int modButtonWidth = 98;
+        int modButtonHeight = 20;
+        int modButtonX = e.getScreen().width / 2 + 4;
+        int modButtonY = e.getScreen().height / 4 + (gmrmflag ? 96 : 120) - 16;
+
+        if (existModButton) {
+
+            modButton = findButton(e.getListenersList(), "fml.menu.mods");
+            if (modButton != null) {
+                modButton.setWidth(modButtonWidth);
+                modButton.setHeight(modButtonHeight);
+                modButton.x = modButtonX;
+                modButton.y = modButtonY;
+            }
+
+        } else {
+
+            modButton = new Button(modButtonX, modButtonY, modButtonWidth, modButtonHeight, Component.translatable("menu.modoption"), (n) -> {
+                var openGui = GameMenuModOptionAPI.getOpenModOptions(e.getScreen());
+                if (openGui != null)
+                    Minecraft.getInstance().setScreen(openGui);
+            });
+            e.addListener(modButton);
+
+        }
 
         if (!gmrmflag) {
             if (options != null)
@@ -98,7 +112,7 @@ public class ScreenHandler {
         }
 
         if (ClientConfig.ShowNotificationModUpdate.get())
-            e.addListener(new NotificationModUpdateListener(notificationInit(pauseScreen, button)));
+            e.addListener(new NotificationModUpdateListener(notificationInit(pauseScreen, modButton)));
     }
 
     @SubscribeEvent
