@@ -2,11 +2,12 @@
   "homepage": "https://github.com/MORIMORI0317/GameMenuModOption/releases",
   "1.19.4": {
     "2.1.0": "Changed\n- Port MC1.19.4\n",
-    "2.1.1": "Fixed\n- Fixed an issue where I forgot to delete the debug log output code\n"
+    "2.1.1": "Fixed\n- Fixed an issue where I forgot to delete the debug log output code\n",
+    "2.1.2": "Changed\n- Changed to replace Forge mod button\n"
   },
   "promos": {
-    "1.19.4-latest": "2.1.1",
-    "1.19.4-recommended": "2.1.1",
+    "1.19.4-latest": "2.1.2",
+    "1.19.4-recommended": "2.1.2",
     "1.20-latest": "2.2.0",
     "1.20-recommended": "2.2.0",
     "1.19.2-latest": "1.18.1",
