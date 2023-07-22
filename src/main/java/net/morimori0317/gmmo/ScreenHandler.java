@@ -17,6 +17,8 @@ import net.minecraftforge.client.gui.TitleScreenModUpdateIndicator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ScreenHandler {
+    public static final ThreadLocal<Boolean> FORGE_MOD_BUTTON_ADDED = ThreadLocal.withInitial(() -> false);
+
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post e) {
         if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !((GMMOPauseScreen) pauseScreen).isShowPauseMenu())

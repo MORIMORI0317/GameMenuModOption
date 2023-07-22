@@ -9,9 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.ShareToLanScreen;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.network.chat.Component;
-import net.morimori0317.gmmo.ClientConfig;
-import net.morimori0317.gmmo.GMMOPauseScreen;
-import net.morimori0317.gmmo.GameMenuModOptionAPI;
+import net.morimori0317.gmmo.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,6 +35,12 @@ public class PauseScreenMixin implements GMMOPauseScreen {
     @Shadow
     @Final
     private boolean showPauseMenu;
+    @Shadow
+    @Final
+    private static int BUTTON_WIDTH_FULL;
+    @Shadow
+    @Final
+    private static int BUTTON_WIDTH_HALF;
     @Unique
     private static final Component MOD_OPTION = Component.translatable("menu.modoption");
     @Unique
@@ -53,8 +57,22 @@ public class PauseScreenMixin implements GMMOPauseScreen {
                 rowHelper.addChild(openScreenLongButton(PLAYER_REPORTING, SocialInteractionsScreen::new), 2);
             }
         } else {
-            this.modOptionButton = rowHelper.addChild(openScreenLongButton(MOD_OPTION, () -> GameMenuModOptionAPI.getOpenModOptions((PauseScreen) (Object) this)), 2);
+            if (GMMOUtils.existModButton()) {
+                this.modOptionButton = rowHelper.addChild(GMMOUtils.createForgeModButton((PauseScreen) (Object) this, BUTTON_WIDTH_FULL), 2);
+            } else {
+                this.modOptionButton = rowHelper.addChild(openScreenLongButton(MOD_OPTION, () -> GameMenuModOptionAPI.getOpenModOptions((PauseScreen) (Object) this)), 2);
+            }
         }
+    }
+
+    @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;I)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 0))
+    private void createPauseMenuInject2(CallbackInfo ci) {
+        ScreenHandler.FORGE_MOD_BUTTON_ADDED.set(true);
+    }
+
+    @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;I)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 0, shift = At.Shift.AFTER))
+    private void createPauseMenuInject3(CallbackInfo ci) {
+        ScreenHandler.FORGE_MOD_BUTTON_ADDED.set(false);
     }
 
     @Inject(method = "openScreenButton", at = @At("HEAD"), cancellable = true)
@@ -63,14 +81,22 @@ public class PauseScreenMixin implements GMMOPauseScreen {
             return;
 
         if (name == SHARE_TO_LAN || name == PLAYER_REPORTING) {
-            var moButton = Button.builder(MOD_OPTION, (button) -> Minecraft.getInstance().setScreen(GameMenuModOptionAPI.getOpenModOptions((PauseScreen) (Object) this))).width(98).build();
-            modOptionButton = moButton;
-            cir.setReturnValue(moButton);
+            Button modButton;
+
+            if (GMMOUtils.existModButton()) {
+                modButton = GMMOUtils.createForgeModButton((PauseScreen) (Object) this, BUTTON_WIDTH_HALF);
+            } else {
+                modButton = Button.builder(MOD_OPTION, (button) -> Minecraft.getInstance().setScreen(GameMenuModOptionAPI.getOpenModOptions((PauseScreen) (Object) this))).width(BUTTON_WIDTH_HALF).build();
+            }
+
+
+            modOptionButton = modButton;
+            cir.setReturnValue(modButton);
         }
     }
 
     private Button openScreenLongButton(Component name, Supplier<Screen> screen) {
-        return Button.builder(name, (button) -> Minecraft.getInstance().setScreen(screen.get())).width(204).build();
+        return Button.builder(name, (button) -> Minecraft.getInstance().setScreen(screen.get())).width(BUTTON_WIDTH_FULL).build();
     }
 
     @Override
