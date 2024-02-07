@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.morimori0317.gamemenumodoption.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "GridLayoutRowHelperMixin",
+    "PauseScreenMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

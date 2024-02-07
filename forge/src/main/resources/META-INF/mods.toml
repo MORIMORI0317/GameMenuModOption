@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[48,)"
+issueTrackerURL = "https://github.com/MORIMORI0317/GameMenuModOption/issues"
+license = "GNU LGPLv3"
+
+[[mods]]
+modId = "gamemenumodoption"
+version = "${version}"
+displayName = "Game Menu Mod Option"
+displayURL = "https://modrinth.com/mod/gamemenumodoption"
+updateJSONURL = "https://raw.githubusercontent.com/MORIMORI0317/GameMenuModOption/master/version_check.json"
+authors = "MORIMORI0317"
+description = '''
+A mod that adds a mod option to the game menu
+The ikisugi game menu mod...
+'''
+logoFile = "logo.png"
+clientSideOnly=true
+
+[modproperties.gamemenumodoption]
+catalogueImageIcon = "icon.png"
+
+[[dependencies.gamemenumodoption]]
+modId = "forge"
+mandatory = true
+versionRange = "[48,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.gamemenumodoption]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.2,)"
+ordering = "NONE"
+side = "BOTH"

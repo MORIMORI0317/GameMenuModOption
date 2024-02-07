@@ -6,9 +6,9 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-
+- Support NeoForge
 ### Changed
-
+- Changed to overwrite MOD button text
 ### Deprecated
 
 ### Removed
