@@ -66,7 +66,7 @@ components.java {
 
 def mainJar = file("${project.layout.buildDirectory.get().asFile}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
 def sourcesJar = file("${project.layout.buildDirectory.get().asFile}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}-sources.jar")
-def changeLogFile = file('./LATEST_CHANGELOG.md')
+def changeLogFile = file('../LATEST_CHANGELOG.md')
 def uploadMainName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-NeoForge"
 def uploadSourcesName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-NeoForge-sources"
 
