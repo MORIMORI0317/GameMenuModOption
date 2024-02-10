@@ -6,9 +6,9 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-- Support NeoForge
+
 ### Changed
-- Changed to overwrite MOD button text
+
 ### Deprecated
 
 ### Removed
@@ -16,6 +16,14 @@ Changelog to track updates for this mod.
 ### Fixed
 
 ### Security
+
+## [2.3.0] - 2024-02-10
+
+### Added
+- Support NeoForge
+
+### Changed
+- Changed to overwrite MOD button text
 
 ## [2.2.1] - 2023-07-22
 
@@ -37,7 +45,8 @@ Changelog to track updates for this mod.
 ### Changed
 - Port MC1.19.4
 
-[Unreleased]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.2.1...HEAD
+[Unreleased]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/MORIMORI0317/GameMenuModOption/compare/v2.1.0...v2.1.1
