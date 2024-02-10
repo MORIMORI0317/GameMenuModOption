@@ -15,10 +15,12 @@ A mod that adds a mod option to the game menu
 The ikisugi game menu mod...
 '''
 logoFile = "logo.png"
-clientSideOnly=true
+clientSideOnly = true
 
 [modproperties.gamemenumodoption]
-catalogueImageIcon = "icon.png"
+catalogueImageIcon = "assets/gamemenumodoption/icon.png"
+catalogueBackground = "assets/gamemenumodoption/background.png"
+configuredBackground = "minecraft:textures/block/cobbled_deepslate.png"
 
 [[dependencies.gamemenumodoption]]
 modId = "forge"

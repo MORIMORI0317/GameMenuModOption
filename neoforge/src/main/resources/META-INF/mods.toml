@@ -17,6 +17,11 @@ The ikisugi game menu mod...
 logoFile = "logo.png"
 clientSideOnly=true
 
+[modproperties.gamemenumodoption]
+catalogueImageIcon = "assets/gamemenumodoption/icon.png"
+catalogueBackground="assets/gamemenumodoption/background.png"
+configuredBackground = "minecraft:textures/block/cobbled_deepslate.png"
+
 [[dependencies.gamemenumodoption]]
 modId = "neoforge"
 mandatory = true

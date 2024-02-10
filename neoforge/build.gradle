@@ -1,5 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'net.darkhax.curseforgegradle' version '1.1.15'
+    id "com.modrinth.minotaur" version '2.8.7'
 }
 
 architectury {
@@ -61,3 +63,44 @@ components.java {
         skip()
     }
 }
+
+def mainJar = file("${project.layout.buildDirectory.get().asFile}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
+def sourcesJar = file("${project.layout.buildDirectory.get().asFile}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}-sources.jar")
+def changeLogFile = file('./LATEST_CHANGELOG.md')
+def uploadMainName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-NeoForge"
+def uploadSourcesName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-NeoForge-sources"
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
+        apiToken = System.getenv('curesforgeapikey')
+
+        def mainFile = upload(findProperty('curesforge_id'), mainJar)
+        mainFile.changelogType = 'markdown'
+        mainFile.changelog = changeLogFile.text
+        mainFile.releaseType = "${project.release_type}"
+        mainFile.displayName = uploadMainName
+
+        mainFile.addGameVersion(project.support_versions.split(",").toArray())
+        mainFile.addJavaVersion('Java 17')
+        mainFile.addModLoader('NeoForge')
+        mainFile.addGameVersion('Client')
+
+        def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
+        sourcesFile.displayName = uploadSourcesName
+    }
+}
+
+if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
+    modrinth {
+        token = System.getenv('modrinthapikey')
+        projectId = "${rootProject.modrinth_id}"
+        versionName = uploadMainName
+        versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-NeoForge"
+        versionType = "${project.release_type}"
+        uploadFile = mainJar
+        gameVersions = List.of(project.support_versions.split(","))
+        loaders = ["neoforge"]
+        changelog = changeLogFile.text
+    }
+}
+
