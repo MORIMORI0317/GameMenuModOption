@@ -1,0 +1,15 @@
+{
+  "homepage": "https://github.com/MORIMORI0317/GameMenuModOption/releases",
+  "1.20.2": {
+    "2.3.0": "Added\n- Support NeoForge\nChanged\n- Changed to overwrite MOD button text\n"
+  },
+  "1.20.4": {
+    "2.3.0": "Added\n- Support NeoForge\nChanged\n- Changed to overwrite MOD button text\n"
+  },
+  "promos": {
+    "1.20.2-latest": "2.3.0",
+    "1.20.2-recommended": "2.3.0",
+    "1.20.4-latest": "2.3.0",
+    "1.20.4-recommended": "2.3.0"
+  }
+}
