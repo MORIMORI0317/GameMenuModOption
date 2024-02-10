@@ -80,7 +80,9 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.releaseType = "${project.release_type}"
         mainFile.displayName = uploadMainName
 
-        mainFile.addGameVersion(project.support_versions.split(",").toArray())
+        project.support_versions.split(",").each {
+            String version -> mainFile.addGameVersion(version)
+        }
         mainFile.addJavaVersion('Java 17')
         mainFile.addModLoader('NeoForge')
         mainFile.addGameVersion('Client')
